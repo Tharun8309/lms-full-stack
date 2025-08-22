@@ -142,9 +142,27 @@ const CourseDetails = () => {
                           <div className="flex items-center justify-between w-full text-gray-800 text-xs md:text-default">
                             <p>{lecture.lectureTitle}</p>
                             <div className='flex gap-2'>
-                              {lecture.isPreviewFree && <p onClick={() => setPlayerData({
-                                videoId: lecture.lectureUrl.split('/').pop()
-                              })} className='text-blue-500 cursor-pointer'>Preview</p>}
+                              {lecture.isPreviewFree && lecture.lectureUrl && <p onClick={() => {
+                                // Extract YouTube video ID from various URL formats
+                                let videoId = lecture.lectureUrl;
+                                console.log('Processing lecture URL:', lecture.lectureUrl);
+                                
+                                if (lecture.lectureUrl.includes('youtube.com/watch?v=')) {
+                                  videoId = lecture.lectureUrl.split('v=')[1]?.split('&')[0];
+                                } else if (lecture.lectureUrl.includes('youtu.be/')) {
+                                  videoId = lecture.lectureUrl.split('youtu.be/')[1]?.split('?')[0];
+                                } else if (lecture.lectureUrl.includes('youtube.com/embed/')) {
+                                  videoId = lecture.lectureUrl.split('embed/')[1]?.split('?')[0];
+                                }
+                                
+                                console.log('Extracted video ID:', videoId);
+                                
+                                if (videoId && videoId.length === 11) {
+                                  setPlayerData({ videoId });
+                                } else {
+                                  toast.error('Invalid video URL format. Please check the video URL.');
+                                }
+                              }} className='text-blue-500 cursor-pointer hover:text-blue-700'>Preview</p>}
                               <p>{humanizeDuration(lecture.lectureDuration * 60 * 1000, { units: ['h', 'm'] })}</p>
                             </div>
                           </div>
@@ -167,7 +185,27 @@ const CourseDetails = () => {
         <div className="max-w-course-card z-10 shadow-custom-card rounded-t md:rounded-none overflow-hidden bg-white min-w-[300px] sm:min-w-[420px]">
           {
             playerData
-              ? <YouTube videoId={playerData.videoId} opts={{ playerVars: { autoplay: 1 } }} iframeClassName='w-full aspect-video' />
+              ? (
+                <div className="relative">
+                  <button 
+                    onClick={() => setPlayerData(null)} 
+                    className="absolute top-2 right-2 z-10 bg-black/70 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-black/90 transition-colors"
+                  >
+                    ✕
+                  </button>
+                  <YouTube 
+                    videoId={playerData.videoId} 
+                    opts={{ 
+                      playerVars: { 
+                        autoplay: 1,
+                        modestbranding: 1,
+                        rel: 0
+                      } 
+                    }} 
+                    iframeClassName='w-full aspect-video' 
+                  />
+                </div>
+              )
               : <img src={courseData.courseThumbnail} alt="" />
           }
           <div className="p-5">

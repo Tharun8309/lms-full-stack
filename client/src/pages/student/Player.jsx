@@ -176,11 +176,49 @@ const Player = ({ }) => {
           playerData
             ? (
               <div>
-                <YouTube iframeClassName='w-full aspect-video' videoId={playerData.lectureUrl.split('/').pop()} />
-                <div className='flex justify-between items-center mt-1'>
-                  <p className='text-xl '>{playerData.chapter}.{playerData.lecture} {playerData.lectureTitle}</p>
-                  <button onClick={() => markLectureAsCompleted(playerData.lectureId)} className='text-blue-600'>{progressData && progressData.lectureCompleted.includes(playerData.lectureId) ? 'Completed' : 'Mark Complete'}</button>
-                </div>
+                {(() => {
+                  // Extract YouTube video ID from various URL formats
+                  let videoId = playerData.lectureUrl;
+                  console.log('Processing lecture URL in Player:', playerData.lectureUrl);
+                  
+                  if (playerData.lectureUrl.includes('youtube.com/watch?v=')) {
+                    videoId = playerData.lectureUrl.split('v=')[1]?.split('&')[0];
+                  } else if (playerData.lectureUrl.includes('youtu.be/')) {
+                    videoId = playerData.lectureUrl.split('youtu.be/')[1]?.split('?')[0];
+                  } else if (playerData.lectureUrl.includes('youtube.com/embed/')) {
+                    videoId = playerData.lectureUrl.split('embed/')[1]?.split('?')[0];
+                  }
+                  
+                  console.log('Extracted video ID in Player:', videoId);
+                  
+                  if (videoId && videoId.length === 11) {
+                    return (
+                      <>
+                        <YouTube 
+                          iframeClassName='w-full aspect-video' 
+                          videoId={videoId}
+                          opts={{ 
+                            playerVars: { 
+                              modestbranding: 1,
+                              rel: 0
+                            } 
+                          }}
+                        />
+                        <div className='flex justify-between items-center mt-1'>
+                          <p className='text-xl '>{playerData.chapter}.{playerData.lecture} {playerData.lectureTitle}</p>
+                          <button onClick={() => markLectureAsCompleted(playerData.lectureId)} className='text-blue-600'>{progressData && progressData.lectureCompleted.includes(playerData.lectureId) ? 'Completed' : 'Mark Complete'}</button>
+                        </div>
+                      </>
+                    );
+                  } else {
+                    return (
+                      <div className='text-center py-8 text-red-600'>
+                        <p>Invalid video URL format. Please check the video URL.</p>
+                        <p className='text-sm mt-2'>URL: {playerData.lectureUrl}</p>
+                      </div>
+                    );
+                  }
+                })()}
               </div>
             )
             : <img src={courseData ? courseData.courseThumbnail : ''} alt="" />

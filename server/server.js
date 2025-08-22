@@ -16,7 +16,9 @@ await connectDB()
 await connectCloudinary()
 
 // Middlewares
-app.use(cors())
+app.use(cors({
+  origin: "https://lms-frontend-pearl-ten.vercel.app"
+}))
 
 // Webhook MUST be registered before JSON body parser so we receive the raw body
 app.post('/stripe', express.raw({ type: 'application/json' }), stripeWebhooks)

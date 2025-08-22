@@ -1,0 +1,48 @@
+# Node.js dependencies
+client/node_modules/
+server/node_modules/
+node_modules/
+
+# Build outputs
+client/build/
+server/build/
+dist/
+.next/
+out/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment files
+client/.env
+client/.env.local
+client/.env.*.local
+# server/.env
+server/.env.local
+server/.env.*.local
+.env
+.env.local
+.env.*.local
+
+# Coverage / testing
+coverage/
+*.lcov
+
+# IDE / Editor configs
+.vscode/
+.idea/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Misc
+*.tgz
+*.bak
+*.tmp

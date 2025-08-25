@@ -1,4 +1,4 @@
-## Project Description
+## Project Description link : https://lms-frontend-pearl-ten.vercel.app/
 An end‑to‑end Learning Management System (LMS) where learners can discover courses, enroll via Stripe Checkout, watch lectures, track progress, and leave ratings. Educators can create and manage courses and view enrolled students.
 
 ### Core Functionalities
